@@ -13,8 +13,8 @@ import java.util.Scanner;
  * the known commands, and if the input is not one of the known commands, it
  * returns a command object that is marked as an unknown command.
  * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2016.02.29
+ * @author  Matthew Romond
+ * @version 2024.03.25
  */
 public class Parser 
 {
@@ -52,8 +52,24 @@ public class Parser
                 // note: we just ignore the rest of the input line.
             }
         }
-
-        return new Command(commands.getCommandWord(word1), word2);
+        
+        /**
+         * Added commands for the game to recognize look and eat.
+         */ 
+        if (word1 != null) {
+            word1 = word1.toLowerCase(); // Convert to lowercase for case-insensitive comparison
+            if (commands.isCommand(word1)) {
+                return new Command(commands.getCommandWord(word1), word2);
+            } else if (word1.equals("look")) { 
+                return new Command(CommandWord.LOOK, word2);
+            } else if (word1.equals("eat")) { 
+                return new Command(CommandWord.EAT, word2);
+            } else {
+                return new Command(CommandWord.UNKNOWN, word2);
+            }
+        } else {
+            return new Command(CommandWord.UNKNOWN, word2);
+        }
     }
 
     /**
@@ -64,3 +80,4 @@ public class Parser
         commands.showAll();
     }
 }
+
