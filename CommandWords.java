@@ -61,8 +61,8 @@ public class CommandWords
      */
     public void showAll() 
     {
-        for(String command : validCommands.keySet()) {
-            System.out.print(command + "  ");
+        for(CommandWord command : validCommands.values()) {
+            System.out.print(command.toString() + "  ");
         }
         System.out.println();
     }

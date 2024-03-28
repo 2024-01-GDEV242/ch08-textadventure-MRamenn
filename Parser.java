@@ -6,13 +6,7 @@ import java.util.Scanner;
  * 
  * This parser reads user input and tries to interpret it as an "Adventure"
  * command. Every time it is called it reads a line from the terminal and
- * tries to interpret the line as a two-word command. It returns the command
- * as an object of class Command.
- *
- * The parser has a set of known command words. It checks user input against
- * the known commands, and if the input is not one of the known commands, it
- * returns a command object that is marked as an unknown command.
- * 
+ * tries to interpret the line as a two-word command.
  * @author  Matthew Romond
  * @version 2024.03.25
  */
@@ -35,40 +29,32 @@ public class Parser
      */
     public Command getCommand() 
     {
-        String inputLine;   // will hold the full input line
-        String word1 = null;
-        String word2 = null;
+        String inputLine;   
+        String commandString = null;
+        String argument = null;
 
-        System.out.print("> ");     // print prompt
+        System.out.print("> ");    
 
-        inputLine = reader.nextLine();
+        inputLine = reader.nextLine().toLowerCase(); 
 
-        // Find up to two words on the line.
+        
         Scanner tokenizer = new Scanner(inputLine);
         if(tokenizer.hasNext()) {
-            word1 = tokenizer.next();      // get first word
-            if(tokenizer.hasNext()) {
-                word2 = tokenizer.next();      // get second word
-                // note: we just ignore the rest of the input line.
+            commandString = tokenizer.next();      
+            if(tokenizer.hasNextLine()) {
+                argument = tokenizer.nextLine().trim(); 
             }
         }
-        
-        /**
-         * Added commands for the game to recognize look and eat.
-         */ 
-        if (word1 != null) {
-            word1 = word1.toLowerCase(); // Convert to lowercase for case-insensitive comparison
-            if (commands.isCommand(word1)) {
-                return new Command(commands.getCommandWord(word1), word2);
-            } else if (word1.equals("look")) { 
-                return new Command(CommandWord.LOOK, word2);
-            } else if (word1.equals("eat")) { 
-                return new Command(CommandWord.EAT, word2);
-            } else {
-                return new Command(CommandWord.UNKNOWN, word2);
-            }
+
+        if (commands.isCommand(commandString)) {
+            CommandWord commandWord = commands.getCommandWord(commandString);
+            return new Command(commandWord, argument);
+        } else if (commandString.equals("look")) { 
+            return new Command(CommandWord.LOOK, argument);
+        } else if (commandString.equals("eat")) { 
+            return new Command(CommandWord.EAT, argument);
         } else {
-            return new Command(CommandWord.UNKNOWN, word2);
+            return new Command(CommandWord.UNKNOWN, argument);
         }
     }
 
@@ -80,4 +66,3 @@ public class Parser
         commands.showAll();
     }
 }
-
